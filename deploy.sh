@@ -10,6 +10,4 @@
 
 # composer install --ignore-platform-reqs --optimize-autoloader --no-dev --prefer-dist
 
-php artisan config:cache
-php artisan route:cache
-php artisan migrate
+php artisan migrate --force
