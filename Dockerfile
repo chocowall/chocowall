@@ -8,4 +8,7 @@ RUN mkdir -p /var/www/html/storage/logs/ && \
     rm -rf tests/ .git/ .github/ *.md && \
     rm -rf vendor/*/test/ vendor/*/tests/*
 
+RUN apk add ldb-dev libldap openldap-dev
+RUN docker-php-ext-install ldap
+
 WORKDIR /var/www/html
