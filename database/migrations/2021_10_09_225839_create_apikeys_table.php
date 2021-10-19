@@ -14,7 +14,7 @@ class CreateApikeysTable extends Migration
     public function up()
     {
         Schema::create('apikeys', function (Blueprint $table) {
-            $table->primary(['user_id']);
+            $table->id();
             $table->bigInteger('user_id')->unsigned();
             $table->string('apikey');
             $table->timestamps();
