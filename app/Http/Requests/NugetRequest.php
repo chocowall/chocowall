@@ -2,7 +2,6 @@
 
 use App\Models\Apikey;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Models\User;
 
 class NugetRequest {
