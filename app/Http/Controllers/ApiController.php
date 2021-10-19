@@ -8,6 +8,7 @@ use App\Http\Requests\NugetRequest;
 use App\Models\Group;
 use App\Models\GroupPackage;
 use App\Models\PackageGroup;
+use Auth;
 use Illuminate\Http\JsonResponse;
 use App\Nuget\NupkgFile;
 use App\Repositories\NugetQueryBuilder;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Artisan;
+use LdapRecord\Models\ActiveDirectory\User as LdapUser;
 
 class ApiController extends Controller
 {
@@ -216,6 +218,11 @@ class ApiController extends Controller
     }
 
     /**
+     * @var array
+     */
+    protected array $packages = [];
+
+    /**
      * Display all packages.
      *
      * @param Request $request
@@ -223,6 +230,22 @@ class ApiController extends Controller
      */
     public function packages(Request $request)
     {
+        $username = Auth::user()->name;
+        $user = LdapUser::findByOrFail('samaccountname', $username);
+        $groups = $user->groups()->get('cn');
+
+        $groups->each(function($group) {
+            $this->groups[] = $group->cn[0];
+        });
+
+        $packages = Group::with('packages')->wherein('name', $this->groups)->get();
+        $packages->each(function($package){
+            $package->packages->each(function($package){
+                $this->packages[] = $package->id;
+            });
+
+        });
+
         $filter = Request()->get('$filter');
         $orderby = Request()->get('$orderby');
         $id = trim(Request()->get('id'), "' \t\n\r\0\x0B");
@@ -242,7 +265,13 @@ class ApiController extends Controller
                 $package = Package::where('package_id', $id)
                     ->where('version', $version)
                     ->first();
-                return $this->displayPackages([$package], route('api.packages'), 'Packages', time(), 1);
+                $allowpackage =  collect($this->packages);
+                if ($allowpackage->contains($package->id)) {
+                    return $this->displayPackages([$package], route('api.packages'), 'Packages', time(), 1);
+                }
+
+                return $this->displayPackages([], route('api.packages'), 'Packages', time(), 1);;
+
             }
         }
 
