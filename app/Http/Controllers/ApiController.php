@@ -69,7 +69,7 @@ class ApiController extends Controller
         $file = $request->getUploadedFile('package');
 
         if ($file === false) {
-           \Log::error('package not uploaded on second check');
+         //  \Log::error('package not uploaded on second check');
             return Response('package not uploaded on second check', 500);
         }
 
