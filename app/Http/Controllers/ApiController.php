@@ -19,11 +19,20 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Artisan;
+use Auth;
 use LdapRecord\Models\ActiveDirectory\User as LdapUser;
 
 class ApiController extends Controller
 {
+    /**
+     * @var NugetQueryBuilder
+     */
     private $queryBuilder;
+
+    /**
+     * @var array
+     */
+    protected array $packageslist = [];
 
     /**
      * ApiController constructor.
@@ -230,6 +239,21 @@ class ApiController extends Controller
     public function packages(Request $request)
     {
 
+        $username = Auth::user()->name;
+        $user = LdapUser::findByOrFail('samaccountname', $username);
+        $groups = $user->groups()->get('cn');
+
+        $groups->each(function($group) {
+            $this->groups[] = $group->cn[0];
+        });
+
+        $packages = Group::with('packages')->wherein('name', $this->groups)->get();
+        $packages->each(function($package){
+            $package->packages->each(function($package){
+                $this->packageslist[] = $package->id;
+            });
+        });
+
         $filter = Request()->get('$filter');
         $orderby = Request()->get('$orderby');
         $id = trim(Request()->get('id'), "' \t\n\r\0\x0B");
@@ -247,7 +271,7 @@ class ApiController extends Controller
                     return $package->version;
                 });
                 $package = Package::where('package_id', $id)
-                    ->where('version', $version)
+                    ->where('version', $version)->wherein('id', $this->packageslist)
                     ->first();
 
                 return $this->displayPackages([$package], route('api.packages'), 'Packages', time(), 1);
