@@ -27,11 +27,17 @@ class NuspecFile
     {
     }
 
-    public function getPackageTargetPath()
+    /**
+     * @return string
+     */
+    public function getPackageTargetPath(): string
     {
         return "packages/{$this->id}.{$this->version}.nupkg";
     }
 
+    /**
+     * @param $package
+     */
     public function apply($package)
     {
         $package->package_id = $this->id;
@@ -60,7 +66,7 @@ class NuspecFile
      * @param $xml
      * @return null|NuspecFile
      */
-    public static function fromXML($xml)
+    public static function fromXML($xml): ?NuspecFile
     {
         $nuspec = new SimpleXMLElement($xml);
 
@@ -151,7 +157,7 @@ class NuspecFile
      * @param $filename string Path to .nuspec file.
      * @return null|NuspecFile The function returns the created instance of NuspecFile.
      */
-    public static function fromFile($filename)
+    public static function fromFile($filename): ?NuspecFile
     {
         $nuSpecContents = file_get_contents($filename);
 
@@ -164,7 +170,7 @@ class NuspecFile
      * @param $nupkg NupkgFile Instance of Nupkg on which to base the NuspecFile instance.
      * @return null|NuspecFile The function returns the created instance of NuspecFile.
      */
-    public static function fromNupkgFile($nupkg)
+    public static function fromNupkgFile($nupkg): ?NuspecFile
     {
         $nuSpecContents = $nupkg->getNuspecFileContent();
 

@@ -176,7 +176,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ResponseMacroServiceProvider::class,
 
-
+        L5Swagger\L5SwaggerServiceProvider::class,
         Madnest\Madzipper\MadzipperServiceProvider::class,
 
 

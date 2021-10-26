@@ -91,7 +91,7 @@ class AtomElement
      * @param string $href
      * @return AtomElement
      */
-    function addLink($rel, $title, $href)
+    function addLink($rel, $title, $href): static
     {
         array_push($this->links, ['rel' => $rel, 'title' => $title, 'href' => $href]);
 
@@ -102,7 +102,7 @@ class AtomElement
      * @param AtomElement $element
      * @return AtomElement
      */
-    function appendChild($element)
+    function appendChild($element): static
     {
         array_push($this->childElements, $element);
 
@@ -113,7 +113,7 @@ class AtomElement
      * @param string $author
      * @return AtomElement $this
      */
-    function addAuthor($author)
+    function addAuthor($author): static
     {
         array_push($this->authors, $author);
 
@@ -124,7 +124,7 @@ class AtomElement
      * @param string $authors
      * @return AtomElement $this
      */
-    function addAuthors($authors)
+    function addAuthors($authors): static
     {
         foreach (explode(',', $authors) as $author)
             $this->addAuthor(trim($author));
@@ -138,7 +138,7 @@ class AtomElement
      * @param string|null $type
      * @return AtomElement
      */
-    function addProperty($name, $value, $type = null)
+    function addProperty($name, $value, $type = null): static
     {
         array_push($this->properties, ['name' => $name, 'value' => $value, 'type' => $type]);
 
@@ -149,7 +149,7 @@ class AtomElement
      * @param int $count
      * @return AtomElement $this
      */
-    function setCount($count)
+    function setCount($count): static
     {
         if (is_int($count))
             $this->count = $count;
@@ -162,7 +162,7 @@ class AtomElement
      * @param string $scheme
      * @return AtomElement
      */
-    function setCategory($category, $scheme)
+    function setCategory($category, $scheme): static
     {
         $this->category = $category;
         $this->categoryScheme = $scheme;
@@ -175,7 +175,7 @@ class AtomElement
      * @param string $contentSrc
      * @return AtomElement
      */
-    function setContent($contentType, $contentSrc)
+    function setContent($contentType, $contentSrc): static
     {
         $this->contentType = $contentType;
         $this->contentSrc = $contentSrc;
@@ -187,7 +187,7 @@ class AtomElement
      * @param DOMDocument $document
      * @return DOMElement
      */
-    function createElementTree($document)
+    function createElementTree($document): DOMElement
     {
         $self = $document->appendChild($document->createElement($this->type));
 
@@ -272,7 +272,11 @@ class AtomElement
         return $self;
     }
 
-    function getDocument($base)
+    /**
+     * @param $base
+     * @return DOMDocument
+     */
+    function getDocument($base): DOMDocument
     {
         $document = new DOMDocument('1.0', 'utf-8');
         $document->formatOutput = true;

@@ -1,0 +1,156 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Chocowall API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/v2/upload": {
+            "put": {
+                "summary": "Upload Packages",
+                "description": "Upload Chocolatey nupkg file",
+                "operationId": "ec85113bb775b460ee972a7dd36c4e80",
+                "responses": {
+                    "200": {
+                        "description": "Status Upload",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v2/package/{id}": {
+            "get": {
+                "summary": "Update Package Authorization",
+                "description": "Update Package file authorization",
+                "operationId": "eb4484895c9c3a995cbda72080985aeb",
+                "responses": {
+                    "200": {
+                        "description": "Update Package file authorization",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "ok"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Packages",
+                "description": "Delete Chocolatey nupkg file",
+                "operationId": "fb651634557a46be58a118fb0102d948",
+                "responses": {
+                    "200": {
+                        "description": "Status Delete"
+                    }
+                }
+            }
+        },
+        "/v2/{id}/{version}": {
+            "get": {
+                "summary": "Download Packages",
+                "description": "Download Chocolatey nupkg file",
+                "operationId": "8937a7e021ceecb4d473fd14dc1c22ed",
+                "responses": {
+                    "200": {
+                        "description": "Download nupkg"
+                    }
+                }
+            }
+        },
+        "/v2/Search()/{action}": {
+            "get": {
+                "summary": "Search Packages with action",
+                "description": "Search Chocolatey nupkg file with action",
+                "operationId": "45a6d13f5d898ddb1201c9db15951ef1",
+                "responses": {
+                    "200": {
+                        "description": "Download nupkg"
+                    }
+                }
+            }
+        },
+        "/v2/Search()": {
+            "get": {
+                "summary": "Search Packages",
+                "description": "Search for packages that can be downloaded.",
+                "operationId": "0bf4d791670636e7208799c1203fc881",
+                "responses": {
+                    "200": {
+                        "description": "List Packages"
+                    }
+                }
+            }
+        },
+        "/v2/$metadata": {
+            "get": {
+                "summary": "metadata",
+                "description": "metadata",
+                "operationId": "eace3f3282478a3a13d58596452b2eeb",
+                "responses": {
+                    "200": {
+                        "description": "Display the metadata of the API."
+                    }
+                }
+            }
+        },
+        "/v2/Packages()": {
+            "get": {
+                "summary": "List Packages",
+                "description": "Lists all packages that are authorized to download.",
+                "operationId": "4dc20da9072751334ea3175a6357bbf1",
+                "responses": {
+                    "200": {
+                        "description": "Lists all packages that are authorized to download."
+                    }
+                }
+            }
+        },
+        "/v2/GetUpdates()": {
+            "get": {
+                "summary": "Update Packages",
+                "description": "Update Packages Information",
+                "operationId": "d1d9bdae8cdac92ac86c5bcf84786824",
+                "responses": {
+                    "200": {
+                        "description": "Display all available updates"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "api_key": {
+                "type": "apiKey",
+                "name": "x-nuget-apikey",
+                "in": "header"
+            },
+            "basicAuth": {
+                "type": "http"
+            }
+        }
+    },
+    "security": [
+        []
+    ]
+}

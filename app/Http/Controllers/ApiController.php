@@ -21,6 +21,29 @@ use Illuminate\Support\Str;
 use Artisan;
 use Auth;
 use LdapRecord\Models\ActiveDirectory\User as LdapUser;
+use LdapRecord\Query\ObjectNotFoundException;
+
+/**
+ * @OA\Info(
+ *     title="Chocowall API",
+ *     version="1.0.0"
+ *
+ * )
+
+ * @OA\SecurityScheme(
+ *   securityScheme="api_key",
+ *   type="apiKey",
+ *   in="header",
+ *   name="x-nuget-apikey"
+ * )
+
+ * @OA\SecurityScheme(
+ *   securityScheme="basicAuth",
+ *   type="http",
+ *
+ * )
+ */
+
 
 class ApiController extends Controller
 {
@@ -49,7 +72,8 @@ class ApiController extends Controller
      *
      * @return mixed
      */
-    public function index()
+
+    public function index(): mixed
     {
         $document = new DOMDocument('1.0', 'utf-8');
         $document->formatOutput = true;
@@ -70,8 +94,20 @@ class ApiController extends Controller
      *
      * @param NugetRequest $request
      * @return mixed
+     * @OA\Put(
+     * path="/v2/upload",
+     * summary="Upload Packages",
+     * description="Upload Chocolatey nupkg file",
+     * @OA\Response(
+     *    response=200,
+     *    description="Status Upload",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="ok")
+     *        )
+     *     )
+     * )
      */
-    public function upload(NugetRequest $request)
+    public function upload(NugetRequest $request): mixed
     {
         $user = $request->getUser();
         $file = $request->getUploadedFile('package');
@@ -92,8 +128,17 @@ class ApiController extends Controller
      * @param $id
      * @param $version
      * @return mixed
+     * @OA\Delete(
+     * path="/v2/package/{id}",
+     * summary="Delete Packages",
+     * description="Delete Chocolatey nupkg file",
+     * @OA\Response(
+     *    response=200,
+     *    description="Status Delete",
+     *     )
+     * )
      */
-    public function delete(NugetRequest $request, $id, $version)
+    public function delete(NugetRequest $request, $id, $version): mixed
     {
         $user = $request->getUser();
         if ($user) {
@@ -122,8 +167,17 @@ class ApiController extends Controller
      * @param $id
      * @param $version
      * @return mixed
+     * @OA\Get(
+     * path="/v2/{id}/{version}",
+     * summary="Download Packages",
+     * description="Download Chocolatey nupkg file",
+     * @OA\Response(
+     *    response=200,
+     *    description="Download nupkg"
+     *     )
+     * )
      */
-    public function download($id, $version = null)
+    public function download($id, $version = null): mixed
     {
         if (strtolower($version) === 'latest' || empty($version)) {
             $package = Package::where('package_id', $id)
@@ -161,8 +215,18 @@ class ApiController extends Controller
      *
      * @param $action
      * @return mixed
+     * @OA\Get(
+     * path="/v2/Search()/{action}",
+     * summary="Search Packages with action",
+     * description="Search Chocolatey nupkg file with action",
+     * @OA\Response(
+     *    response=200,
+     *    description="Download nupkg"
+     *     )
+     * )
      */
-    public function search($action)
+
+    public function search($action): mixed
     {
         if ($action == 'count' || $action == '$count') {
             $count = $this->processSearchQuery()
@@ -176,8 +240,17 @@ class ApiController extends Controller
      * Display search results.
      *
      * @return mixed
+     * @OA\Get(
+     * path="/v2/Search()",
+     * summary="Search Packages",
+     * description="Search for packages that can be downloaded.",
+     * @OA\Response(
+     *    response=200,
+     *    description="List Packages"
+     *     )
+     * )
      */
-    public function searchNoAction()
+    public function searchNoAction(): mixed
     {
         $eloquent = $this->processSearchQuery();
         $packages = $this->queryBuilder->limit($eloquent, Request()->get('$top'), Request()->get('$skip'))->get();
@@ -192,8 +265,17 @@ class ApiController extends Controller
      * Display the metadata of the API.
      *
      * @return mixed
+     * @OA\Get(
+     * path="/v2/$metadata",
+     * summary="metadata",
+     * description="metadata",
+     * @OA\Response(
+     *    response=200,
+     *    description="Display the metadata of the API.",
+     *     )
+     * )
      */
-    public function metadata()
+    public function metadata(): mixed
     {
         return Response::view('api.metadata')
             ->header('Content-Type', 'application/xml');
@@ -206,7 +288,7 @@ class ApiController extends Controller
      * @param $version
      * @return mixed
      */
-    public function package($id, $version)
+    public function package($id, $version): mixed
     {
         /** @var Package $package */
         $package = Package::where('package_id', $id)
@@ -235,8 +317,18 @@ class ApiController extends Controller
      *
      * @param Request $request
      * @return mixed
+     * @throws ObjectNotFoundException
+     * @OA\Get(
+     * path="/v2/Packages()",
+     * summary="List Packages",
+     * description="Lists all packages that are authorized to download.",
+     * @OA\Response(
+     *    response=200,
+     *    description="Lists all packages that are authorized to download.",
+     *     )
+     * )
      */
-    public function packages(Request $request)
+    public function packages(Request $request): mixed
     {
 
         $username = Auth::user()->name;
@@ -292,16 +384,22 @@ class ApiController extends Controller
      * Display all available updates.
      *
      * @return mixed
+     * @OA\Get(
+     * path="/v2/GetUpdates()",
+     * summary="Update Packages",
+     * description="Update Packages Information",
+     * @OA\Response(
+     *    response=200,
+     *    description="Display all available updates",
+     *     )
+     * )
      */
-    public function updates()
+    public function updates(): mixed
     {
         // Read Request.
         $package_ids = explode('|', trim(Request()->get('packageIds'), "'"));
         $package_versions = explode('|', trim(Request()->get('versions'), "'"));
         $include_prerelease = Request()->get('includePrerelease') === 'true';
-        //$include_all_versions = Request()->get('includeAllVersions') === 'true';//@todo ??
-        //$version_constraints= explode('|', Request()->get('versionConstraints'));//@todo ??
-        //$target_frameworks= explode('|', Request()->get('targetFrameworks'));//@todo ??
 
         if (count($package_ids) != count($package_versions)) {
             return $this->generateError('Invalid version count', 'eu-US', 301);
@@ -325,7 +423,13 @@ class ApiController extends Controller
         return $this->displayPackages($packages, route('api.updates'), 'GetUpdates', time(), count($packages));
     }
 
-    private function generateError($message, $language = 'en-US', $status = '404')
+    /**
+     * @param $message
+     * @param string $language
+     * @param string $status
+     * @return mixed
+     */
+    private function generateError($message, $language = 'en-US', $status = '404'): mixed
     {
         $document = new DOMDocument('1.0', 'utf-8');
         $document->formatOutput = true;
@@ -382,7 +486,7 @@ class ApiController extends Controller
      * @param mixed $count
      * @return mixed
      */
-    private function displayPackages($packages, $id, $title, $updated, $count = false)
+    private function displayPackages($packages, $id, $title, $updated, $count = false): mixed
     {
         $properties = Request()->has('$select')
             ? array_filter(explode(',', Request()->get('$select')), function ($name) {
@@ -409,7 +513,7 @@ class ApiController extends Controller
      *
      * @return mixed
      */
-    private function processSearchQuery()
+    private function processSearchQuery(): mixed
     {
         // Read Request.
         //@todo: Improve search_term querying (split words?)
@@ -443,8 +547,20 @@ class ApiController extends Controller
      * @param Request $request
      * @param $id
      * @return JsonResponse
+     * @OA\Get(
+     * path="/v2/package/{id}",
+     * summary="Update Package Authorization",
+     * description="Update Package file authorization",
+     * @OA\Response(
+     *    response=200,
+     *    description="Update Package file authorization",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="ok")
+     *        )
+     *     )
+     * )
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): JsonResponse
     {
 
         $version = $request->version;

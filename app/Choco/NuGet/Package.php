@@ -153,7 +153,7 @@ class Package extends Model
     /**
      * @return array
      */
-    public function getAuthors()
+    public function getAuthors(): array
     {
         return array_map('trim', explode(',', $this->authors));
     }
@@ -161,7 +161,7 @@ class Package extends Model
     /**
      * @return mixed|string
      */
-    public function getIconUrl()
+    public function getIconUrl(): mixed
     {
         return !empty($this->icon_url)
         && (strpos($this->icon_url, 'http://') === 0
@@ -171,7 +171,7 @@ class Package extends Model
     /**
      * @return AtomElement
      */
-    public function getAtomElement()
+    public function getAtomElement(): AtomElement
     {
         return with(new AtomElement('entry', $this->getApiUrl(), $this->package_id, $this->updated_at, $this->package_id))
             ->addLink('edit', 'V2FeedPackage', $this->getApiQuery())

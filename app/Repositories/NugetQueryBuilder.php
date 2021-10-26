@@ -33,7 +33,7 @@ class NugetQueryBuilder {
      * @throws ObjectNotFoundException
      */
 
-    public function all()
+    public function all(): mixed
     {
         $username = Auth::user()->name;
         $user = LdapUser::findByOrFail('samaccountname', $username);
@@ -88,22 +88,38 @@ class NugetQueryBuilder {
         //@todo ReportAbuseUrl, MinClientVersion, LastEdited, LicenseNames, LicenseReportUrl
     ];
 
-    public function getAllProperties()
+    /**
+     * @return array
+     */
+    public function getAllProperties(): array
     {
         return array_keys($this->fieldMappings);
     }
 
-    public function getMapping($property)
+    /**
+     * @param $property
+     * @return mixed|null
+     */
+    public function getMapping($property): mixed
     {
         return $this->isProperty($property) ? $this->fieldMappings[$property] : null;
     }
 
-    public function isProperty($property)
+    /**
+     * @param $property
+     * @return bool
+     */
+    public function isProperty($property): bool
     {
         return Arr::has($this->fieldMappings, $property);
     }
 
-    private function applyFilter($builder, $filter)
+    /**
+     * @param $builder
+     * @param $filter
+     * @return mixed
+     */
+    private function applyFilter($builder, $filter): mixed
     {
         if (!Arr::has($this->fieldMappings, $filter))
         {
@@ -118,7 +134,12 @@ class NugetQueryBuilder {
         return $builder;
     }
 
-    private function applyOrder($eloquent, $order)
+    /**
+     * @param $eloquent
+     * @param $order
+     * @return mixed
+     */
+    private function applyOrder($eloquent, $order): mixed
     {
         $parts = explode(' ', $order, 2);
         $field = $parts[0];
@@ -143,7 +164,12 @@ class NugetQueryBuilder {
         return $eloquent->orderBy($mapping['field'], $order);
     }
 
-    public function castType($field, $value)
+    /**
+     * @param $field
+     * @param $value
+     * @return mixed|string
+     */
+    public function castType($field, $value): mixed
     {
         $mapping = $this->fieldMappings[$field];
 
@@ -163,7 +189,11 @@ class NugetQueryBuilder {
         }
     }
 
-    private function splitEx($input)
+    /**
+     * @param $input
+     * @return array
+     */
+    private function splitEx($input): array
     {
         $result = [];
         $len = strlen($input);
@@ -207,7 +237,14 @@ class NugetQueryBuilder {
         return $result;
     }
 
-    public function query($filter, $orderBy, $id = null)
+    /**
+     * @param $filter
+     * @param $orderBy
+     * @param null $id
+     * @return mixed
+     * @throws ObjectNotFoundException
+     */
+    public function query($filter, $orderBy, $id = null): mixed
     {
         $eloquent = $this->all();
         if(!empty($id))
@@ -234,7 +271,13 @@ class NugetQueryBuilder {
         return $eloquent;
     }
 
-    public function limit($eloquent, $top, $skip)
+    /**
+     * @param $eloquent
+     * @param $top
+     * @param $skip
+     * @return mixed
+     */
+    public function limit($eloquent, $top, $skip): mixed
     {
         if (!empty($skip))
         {

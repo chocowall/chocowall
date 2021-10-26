@@ -1,7 +1,6 @@
 <?php namespace App\Nuget;
 
 use App\Models\User;
-// use Chumper\Zipper\Zipper;
 use Madnest\Madzipper\Madzipper;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
@@ -9,32 +8,57 @@ use App\Choco\NuGet\Package;
 
 class NupkgFile
 {
+    /**
+     * @var
+     */
     private $filename;
+    /**
+     * @var false
+     */
     private $isFileInStorage;
 
+    /**
+     * @param $filename
+     * @param false $isFileInStorage
+     */
     public function __construct($filename, $isFileInStorage = false)
     {
         $this->filename = $filename;
         $this->isFileInStorage = $isFileInStorage;
     }
 
-    private function getContents()
+    /**
+     * @return false|string
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function getContents(): bool|string
     {
         return $this->isFileInStorage ? Storage::get($this->filename) : file_get_contents($this->filename);
     }
 
-    public function getSize()
+    /**
+     * @return false|int
+     */
+    public function getSize(): bool|int
     {
         return $this->isFileInStorage ? Storage::size($this->filename) : filesize($this->filename);
     }
 
+    /**
+     * @param $filename
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
     public function store($filename)
     {
         Storage::put($filename, $this->getContents());
         $this->filename = $filename;
     }
 
-    public function getHash($algorithm)
+    /**
+     * @param $algorithm
+     * @return string
+     */
+    public function getHash($algorithm): string
     {
         return base64_encode(hash(strtolower($algorithm), file_get_contents($this->filename), true));
     }
@@ -44,7 +68,7 @@ class NupkgFile
      *
      * @return null|NuspecFile The function returns the created instance of Nuspec.
      */
-    public function getNuspec()
+    public function getNuspec(): ?NuspecFile
     {
         return NuspecFile::fromNupkgFile($this);
     }
@@ -54,10 +78,10 @@ class NupkgFile
      *
      * @return bool|string  The function returns the read data or false on failure.
      */
-    public function getNuspecFileContent()
+    public function getNuspecFileContent(): bool|string
     {
         // List files in .nupkg file
-        $zipper = new \Madnest\Madzipper\Madzipper;
+        $zipper = new Madzipper;
         $fileList = $zipper->zip($this->filename)
             ->listFiles();
 
@@ -74,12 +98,14 @@ class NupkgFile
 
         // Return contents of zip file
         $contents = $zipper->getFileContent(array_shift($nuspecFiles));
-      //  $zipper->close();
-
         return $contents;
     }
 
-    public function savePackage($uploader = null)
+    /**
+     * @param null $uploader
+     * @return Package|false
+     */
+    public function savePackage($uploader = null): Package|bool
     {
         if ($uploader === null) {
             $uploader = User::where('email', 'system-cache@repo.local')->first();
@@ -103,7 +129,6 @@ class NupkgFile
         if ($package === null) {
             $package = new Package();
         }
-//        return $package;
         // Apply specs to package revision
         $nuspec->apply($package);
 
@@ -116,9 +141,6 @@ class NupkgFile
         $package->hash = $this->getHash($hash_algorithm);
         $package->hash_algorithm = $hash_algorithm;
         $package->size = $this->getSize();
-
-        // Set uploader
-        // $package->user_id = '1';
 
         // Move file
         $targetPath = $nuspec->getPackageTargetPath();
