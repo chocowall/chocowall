@@ -1,11 +1,8 @@
-name: Docker Commit
+name: Docker Release
 
 on:
   push:
-    branches:
-      - "*"
-  pull_request:
-    branches:
+    tags:
       - "*"
 
 jobs:
@@ -14,7 +11,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    name: Tag Commit
+    name: Tag Release
 
     steps:
       - uses: actions/checkout@v2
@@ -31,6 +28,15 @@ jobs:
         with:
           path: ~/.composer/cache/files
           key: composer-${{ hashFiles('composer.json') }}
+
+      - name: Docker meta
+        id: docker_meta
+        uses: docker/metadata-action@v3.6.0
+        with:
+          images: ghcr.io/chocowall/chocowall
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -49,11 +55,12 @@ jobs:
         run: |
           composer install --no-interaction --no-progress --prefer-dist --optimize-autoloader --no-dev
 
-      - name: Build and push
+      - name: Build and Push
         id: docker
         uses: docker/build-push-action@v2
         with:
           push: true
           context: .
-          tags: ghcr.io/chocowall/chocowall:${{ github.sha }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
           file: Dockerfile

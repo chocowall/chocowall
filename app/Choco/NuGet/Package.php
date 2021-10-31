@@ -32,7 +32,9 @@ class Package extends Model
 {
 
     protected $table = 'packages';
-
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'package_id', /* string */
         'version', /* string */

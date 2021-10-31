@@ -7,6 +7,9 @@
     "paths": {
         "/v2/upload": {
             "put": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "Upload Packages",
                 "description": "Upload Chocolatey nupkg file",
                 "operationId": "ec85113bb775b460ee972a7dd36c4e80",
@@ -27,11 +30,19 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
             }
         },
         "/v2/package/{id}": {
             "get": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "Update Package Authorization",
                 "description": "Update Package file authorization",
                 "operationId": "eb4484895c9c3a995cbda72080985aeb",
@@ -52,9 +63,17 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ]
             },
             "delete": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "Delete Packages",
                 "description": "Delete Chocolatey nupkg file",
                 "operationId": "fb651634557a46be58a118fb0102d948",
@@ -62,11 +81,19 @@
                     "200": {
                         "description": "Status Delete"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
             }
         },
         "/v2/{id}/{version}": {
             "get": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "Download Packages",
                 "description": "Download Chocolatey nupkg file",
                 "operationId": "8937a7e021ceecb4d473fd14dc1c22ed",
@@ -74,11 +101,19 @@
                     "200": {
                         "description": "Download nupkg"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ]
             }
         },
         "/v2/Search()/{action}": {
             "get": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "Search Packages with action",
                 "description": "Search Chocolatey nupkg file with action",
                 "operationId": "45a6d13f5d898ddb1201c9db15951ef1",
@@ -86,11 +121,19 @@
                     "200": {
                         "description": "Download nupkg"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ]
             }
         },
         "/v2/Search()": {
             "get": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "Search Packages",
                 "description": "Search for packages that can be downloaded.",
                 "operationId": "0bf4d791670636e7208799c1203fc881",
@@ -98,11 +141,19 @@
                     "200": {
                         "description": "List Packages"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ]
             }
         },
         "/v2/$metadata": {
             "get": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "metadata",
                 "description": "metadata",
                 "operationId": "eace3f3282478a3a13d58596452b2eeb",
@@ -110,11 +161,19 @@
                     "200": {
                         "description": "Display the metadata of the API."
                     }
-                }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ]
             }
         },
         "/v2/Packages()": {
             "get": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "List Packages",
                 "description": "Lists all packages that are authorized to download.",
                 "operationId": "4dc20da9072751334ea3175a6357bbf1",
@@ -122,11 +181,19 @@
                     "200": {
                         "description": "Lists all packages that are authorized to download."
                     }
-                }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ]
             }
         },
         "/v2/GetUpdates()": {
             "get": {
+                "tags": [
+                    "v2"
+                ],
                 "summary": "Update Packages",
                 "description": "Update Packages Information",
                 "operationId": "d1d9bdae8cdac92ac86c5bcf84786824",
@@ -134,7 +201,12 @@
                     "200": {
                         "description": "Display all available updates"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "api_key": []
+                    }
+                ]
             }
         }
     },
@@ -146,7 +218,9 @@
                 "in": "header"
             },
             "basicAuth": {
-                "type": "http"
+                "type": "http",
+                "name": "basic",
+                "scheme": "basic"
             }
         }
     },

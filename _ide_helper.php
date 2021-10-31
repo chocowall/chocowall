@@ -15972,6 +15972,41 @@
      
 }
 
+    namespace Andyabih\LaravelToUML\Facades { 
+            /**
+     * 
+     *
+     */ 
+        class LaravelToUML {
+                    /**
+         * Create a new instance of the Laravel to UML.
+         *
+         * @return \Andyabih\LaravelToUML 
+         * @static 
+         */ 
+        public static function create()
+        {
+                        /** @var \Andyabih\LaravelToUML\LaravelToUML $instance */
+                        return $instance->create();
+        }
+                    /**
+         * Turn the classes array into a nomnoml schema.
+         * 
+         * https://github.com/skanaar/nomnoml
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getSource()
+        {
+                        /** @var \Andyabih\LaravelToUML\LaravelToUML $instance */
+                        return $instance->getSource();
+        }
+         
+    }
+     
+}
+
     namespace L5Swagger { 
             /**
      * 
@@ -19763,6 +19798,7 @@ namespace  {
             class Validator extends \Illuminate\Support\Facades\Validator {}
             class View extends \Illuminate\Support\Facades\View {}
             class Madzipper extends \Madnest\Madzipper\Facades\Madzipper {}
+            class LaravelToUML extends \Andyabih\LaravelToUML\Facades\LaravelToUML {}
             class L5Swagger extends \L5Swagger\L5SwaggerFacade {}
             class Flare extends \Facade\Ignition\Facades\Flare {}
      

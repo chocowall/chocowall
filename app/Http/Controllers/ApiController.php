@@ -31,15 +31,17 @@ use LdapRecord\Query\ObjectNotFoundException;
  * )
 
  * @OA\SecurityScheme(
- *   securityScheme="api_key",
- *   type="apiKey",
- *   in="header",
- *   name="x-nuget-apikey"
+ *     securityScheme="api_key",
+ *     type="apiKey",
+ *     in="header",
+ *     name="x-nuget-apikey"
  * )
 
  * @OA\SecurityScheme(
- *   securityScheme="basicAuth",
- *   type="http",
+ *     securityScheme="basicAuth",
+ *     type="http",
+ *     name="basic",
+ *     scheme="basic"
  *
  * )
  */
@@ -98,6 +100,8 @@ class ApiController extends Controller
      * path="/v2/upload",
      * summary="Upload Packages",
      * description="Upload Chocolatey nupkg file",
+     * security = {{ "api_key":{} }},
+     * tags = { "v2" },
      * @OA\Response(
      *    response=200,
      *    description="Status Upload",
@@ -130,8 +134,10 @@ class ApiController extends Controller
      * @return mixed
      * @OA\Delete(
      * path="/v2/package/{id}",
+     * tags = { "v2" },
      * summary="Delete Packages",
      * description="Delete Chocolatey nupkg file",
+     * security = {{ "api_key":{} }},
      * @OA\Response(
      *    response=200,
      *    description="Status Delete",
@@ -169,8 +175,10 @@ class ApiController extends Controller
      * @return mixed
      * @OA\Get(
      * path="/v2/{id}/{version}",
+     * tags = { "v2" },
      * summary="Download Packages",
      * description="Download Chocolatey nupkg file",
+     * security = {{ "basicAuth":{} }},
      * @OA\Response(
      *    response=200,
      *    description="Download nupkg"
@@ -217,7 +225,9 @@ class ApiController extends Controller
      * @return mixed
      * @OA\Get(
      * path="/v2/Search()/{action}",
+     * tags = { "v2" },
      * summary="Search Packages with action",
+     * security = {{ "basicAuth":{} }},
      * description="Search Chocolatey nupkg file with action",
      * @OA\Response(
      *    response=200,
@@ -242,8 +252,10 @@ class ApiController extends Controller
      * @return mixed
      * @OA\Get(
      * path="/v2/Search()",
+     * tags = { "v2" },
      * summary="Search Packages",
      * description="Search for packages that can be downloaded.",
+     * security = {{ "basicAuth":{} }},
      * @OA\Response(
      *    response=200,
      *    description="List Packages"
@@ -267,8 +279,10 @@ class ApiController extends Controller
      * @return mixed
      * @OA\Get(
      * path="/v2/$metadata",
+     * tags = { "v2" },
      * summary="metadata",
      * description="metadata",
+     * security = {{ "basicAuth":{} }},
      * @OA\Response(
      *    response=200,
      *    description="Display the metadata of the API.",
@@ -320,6 +334,8 @@ class ApiController extends Controller
      * @throws ObjectNotFoundException
      * @OA\Get(
      * path="/v2/Packages()",
+     * tags = { "v2" },
+     * security = {{ "basicAuth":{} }},
      * summary="List Packages",
      * description="Lists all packages that are authorized to download.",
      * @OA\Response(
@@ -386,7 +402,9 @@ class ApiController extends Controller
      * @return mixed
      * @OA\Get(
      * path="/v2/GetUpdates()",
+     * tags = { "v2" },
      * summary="Update Packages",
+     * security = {{ "api_key":{} }},
      * description="Update Packages Information",
      * @OA\Response(
      *    response=200,
@@ -549,7 +567,9 @@ class ApiController extends Controller
      * @return JsonResponse
      * @OA\Get(
      * path="/v2/package/{id}",
+     * tags = { "v2" },
      * summary="Update Package Authorization",
+     * security = {{ "basicAuth":{} }},
      * description="Update Package file authorization",
      * @OA\Response(
      *    response=200,
